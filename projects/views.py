@@ -1,39 +1,66 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_GET, require_POST
 
-projects_list = [
-    {
-        'id': '1',
-        'title': 'Ecommerce Website',
-        'description': 'Fully functional ecommerce website'
-    },
-
-    {
-        'id': '2',
-        'title': 'Portfolio Website',
-        'description': 'A personal website to write articles and display work'
-    },
-
-    {
-        'id': '3',
-        'title': 'Social Network',
-        'description': 'An open source project built by the community'
-    }
-]
+from projects.models import Project
+from .forms import ProjectForm
 
 
-def projects(request):
-    return render(request, 'projects/index.html', {'projects': projects_list})
+@require_GET
+def index(request):
+    return render(request, 'projects/index.html', {
+        'projects': Project.objects.all()
+    })
 
 
-def project(request, pk):
-    project_object = None
+@require_GET
+def show(request, uuid):
+    try:
+        project = Project.objects.get(id=uuid)
+    except Project.DoesNotExist:
+        project = None
 
-    for project_item in projects_list:
-        if project_item['id'] == pk:
-            project_object = project_item
+    return render(request, 'projects/show.html', {
+        'project': project,
+    })
 
-    context = {
-        'project': project_object
-    }
 
-    return render(request, 'projects/show.html', context)
+@require_GET
+def create(request):
+    form = ProjectForm()
+    return render(request, 'projects/create.html', {
+        'form': form
+    })
+
+
+@require_POST
+def store(request):
+    form = ProjectForm(request.POST)
+    if form.is_valid():
+        form.save()
+    return redirect('home')
+
+
+@require_GET
+def edit(request, uuid):
+    project = Project.objects.get(id=uuid)
+    form = ProjectForm(instance=project)
+    return render(request, 'projects/edit.html', {
+        'project': project,
+        'form': form
+    })
+
+
+@require_POST
+def update(request, uuid):
+    project = Project.objects.get(id=uuid)
+    form = ProjectForm(request.POST, instance=project)
+    if form.is_valid():
+        form.save()
+    return redirect('home')
+
+
+@require_POST
+def delete(request, uuid):
+    project = Project.objects.get(id=uuid)
+    project.delete()
+    return redirect('home')

@@ -1,0 +1,10 @@
+{% extends 'layout/main.html' %}
+
+{% block content %}
+    <h1>Create Project</h1>
+    <form action="{% url 'project.store' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create</button>
+    </form>
+{% endblock content %}
