@@ -1,10 +1,15 @@
 {% extends 'layout/main.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <h1>Create Project</h1>
-    <form action="{% url 'project.store' %}" method="POST">
+    <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{% url 'project.store' %}"
+    >
         {% csrf_token %}
-        {{ form.as_p }}
+        {{form|crispy}}
         <button type="submit">Create</button>
     </form>
 {% endblock content %}

@@ -1,10 +1,46 @@
 {% extends 'layout/main.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-    <h1>Edit {{ project.title }}</h1>
-    <form action="{% url 'project.update' project.id %}" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
-    </form>
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <h5>Tools and Stacks</h5>
+            {% for tag in project.tags.all %}
+                <span class="badge text-bg-primary">{{ tag }}</span>
+            {% endfor %}
+            {% if project.source_link %}
+                <div class="mt-4">
+                    <a href="{{ project.source_link }}">Source Code</a>
+                </div>
+            {% endif %}
+            {% if project.demo_link %}
+                <div class="mt-4">
+                    <a href="{{ project.demo_link }}">Demo Link</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-12 col-md-8">
+            <img
+                    src="{{ project.featured_image.url }}"
+                    class="img-fluid mx-auto d-block"
+                    alt="Project Image"
+                    style="max-height: 25rem;"
+            >
+            <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    action="{% url 'project.update' project.id %}"
+            >
+                {% csrf_token %}
+{#                {{ form.as_p }}#}
+                {% for field in form %}
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                    {{ field|as_crispy_field }}
+                  </div>
+                {% endfor %}
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
 {% endblock content %}

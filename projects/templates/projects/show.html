@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Project: {{ project.title }}</h1>
+    <img src="{{ project.featured_image.url }}" class="img-fluid" alt="Project Image">
     <ul>
         {% for tag in project.tags.all %}
             <li>{{ tag }}</li>

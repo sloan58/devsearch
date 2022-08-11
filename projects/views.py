@@ -34,7 +34,7 @@ def create(request):
 
 @require_POST
 def store(request):
-    form = ProjectForm(request.POST)
+    form = ProjectForm(request.POST, request.FILES)
     if form.is_valid():
         form.save()
     return redirect('home')
@@ -53,7 +53,7 @@ def edit(request, uuid):
 @require_POST
 def update(request, uuid):
     project = Project.objects.get(id=uuid)
-    form = ProjectForm(request.POST, instance=project)
+    form = ProjectForm(request.POST, request.FILES, instance=project)
     if form.is_valid():
         form.save()
     return redirect('home')
