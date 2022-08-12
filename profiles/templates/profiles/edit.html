@@ -1,0 +1,24 @@
+{% extends 'layout/main.html' %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <img
+                    src="{{ profile.profile_image.url }}"
+                    class="img-fluid mx-auto d-block"
+                    alt="profile Image"
+                    style="max-height: 25rem;"
+            >
+            <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    action="{% url 'profile.update' profile.id %}"
+            >
+                {% csrf_token %}
+                {{form|crispy}}
+                <button class="btn btn-primary" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
